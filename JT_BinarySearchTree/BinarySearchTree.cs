@@ -11,11 +11,13 @@ namespace JT_BinarySearchTree
     public class BinarySearchTree<T> : IBST_G<T>, IBST_VG<T> where T : IComparable<T>
     {
         private Node<T>? Root = null;
-        private Node<T>? Current = null;
         private int count = 0;
 
         public void Balance()
         {
+            // Methods that you may find useful:
+            // private int GetMaxDepth()
+            // private int GetMinDepth()
             Console.WriteLine(Root.GetBalance()); // TODO
         }
 
@@ -41,6 +43,8 @@ namespace JT_BinarySearchTree
 
         public void Insert(T value)
         {
+            if (Exists(value)) return; // TODO: inga dubletter tillåts :)
+
             var node = new Node<T>(value);
             if (Root == null)
             {
@@ -49,52 +53,106 @@ namespace JT_BinarySearchTree
                 return;
             }
 
-            Current = Root;
+            var current = Root;
             while (true)
             {
-                if (node.Data.CompareTo(Current.Data) < 0) // om node < current
+                if (node.Data.CompareTo(current.Data) < 0)
                 {
-                    if (Current.LeftChild == null)
+                    if (current.LeftChild == null)
                     {
-                        Current.LeftChild = node;
+                        current.LeftChild = node;
                         count++;
                         return;
                     }
-                    Current = Current.LeftChild;
+                    current = current.LeftChild;
                 }
-                else if(node.Data.CompareTo(Current.Data) > 0) // om node > current
+                else
                 {
-                    if (Current.RightChild == null)
+                    if (current.RightChild == null)
                     {
-                        Current.RightChild = node;
+                        current.RightChild = node;
                         count++;
                         return;
                     }
-                    Current = Current.RightChild;
+                    current = current.RightChild;
                 }
-                else // node == current
+            }
+        }
+
+        public void Remove(T value)
+        // TODO: när nod inte är löv
+        // TODO: finns det snyggare lösningsförslag för att spara parent???
+        {
+            if (Root == null) return;
+
+            var current = Root;
+            var parent = Root;
+
+            while (current != null && current.Data.CompareTo(value) != 0)
+            {
+                parent = current;
+                if (current.Data.CompareTo(value) > 0) current = current.LeftChild;
+                else current = current.RightChild;
+            }
+            
+            if (current == null) return;
+
+            if (current.RightChild == null && current.LeftChild == null) // sökt nod hittad - löv
+            {
+                if (current == Root) Root = null;
+                else if (current == parent.LeftChild) parent.LeftChild = null;
+                else parent.RightChild = null;
+                count--;
+            }
+        }
+
+        // Code from David
+        public void Print()
+        {
+            Queue<Node<T>?> nodes = new Queue<Node<T>?>();
+            Queue<Node<T>?> newNodes = new Queue<Node<T>?>();
+            nodes.Enqueue(Root);
+            //int maxDepth = Root.GetDepth();
+            int depth = 0;
+
+            bool exitCondition = false;
+            while (nodes.Count > 0 && !exitCondition)
+            {
+                depth++;
+                newNodes = new Queue<Node<T>?>();
+
+                string xs = "[";
+                foreach (var maybeNode in nodes)
                 {
-                    if (Current.LeftChild == null)
+                    string data = maybeNode == null ? " " : "" + maybeNode.Data;
+                    if (maybeNode == null)
                     {
-                        Current.LeftChild = node;
-                        count++;
-                    }
-                    else if (Current.RightChild == null)
-                    {
-                        Current.RightChild = node;
-                        count++;
+                        xs += "_, ";
+                        newNodes.Enqueue(null);
+                        newNodes.Enqueue(null);
                     }
                     else
                     {
-                        // TODO: kolla vidare nästa icke tomma nod, kolla balansen för att gå höger vänster?
+                        Node<T> node = maybeNode;
+                        string s = node.Data.ToString();
+                        xs += s.Substring(0, Math.Min(4, s.Length)) + ", ";
+                        if (node.LeftChild != null) newNodes.Enqueue(node.LeftChild);
+                        else newNodes.Enqueue(null);
+                        if (node.RightChild != null) newNodes.Enqueue(node.RightChild);
+                        else newNodes.Enqueue(null);
                     }
                 }
-            }
-            }
+                xs = xs.Substring(0, xs.Length - 2) + "]";
 
-        public void Remove(T value)
-        {
-            throw new NotImplementedException();
+                Console.WriteLine(xs);
+
+                nodes = newNodes;
+                exitCondition = true;
+                foreach (var m in nodes)
+                {
+                    if (m != null) exitCondition = false;
+                }
+            }
         }
     }
 }

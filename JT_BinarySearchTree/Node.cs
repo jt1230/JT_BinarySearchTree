@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace JT_BinarySearchTree
 {
-    public class Node<T>
+	// Code from David
+	public class Node<T>
     {
 		public T Data { get; set; }
 		public Node<T>? LeftChild { get; set; }
@@ -19,13 +20,11 @@ namespace JT_BinarySearchTree
 			Data = value;
 		}
 
-		// A balanced tree should be as close as possible to equal amount of nodes on both sides
-		// 0 is best, but +1 and -1 is ok.
 		public int GetBalance()
 		{
 			int left = (LeftChild == null) ? 0 : LeftChild.GetBalance() + 1;
 			int right = (RightChild == null) ? 0 : RightChild.GetBalance() + 1;
-			return right - left;
+			return Math.Abs(right - left); 
 		}
 	}
 }
