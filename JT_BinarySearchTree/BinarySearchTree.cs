@@ -43,7 +43,7 @@ namespace JT_BinarySearchTree
 
         public void Insert(T value)
         {
-            if (Exists(value)) return; // TODO: inga dubletter tillåts :)
+            if (Exists(value)) return;
 
             var node = new Node<T>(value);
             if (Root == null)
@@ -80,87 +80,99 @@ namespace JT_BinarySearchTree
         }
 
         public void Remove(T value)
-        // TODO: när nod inte är löv
         // TODO: finns det snyggare lösningsförslag för att spara parent???
         {
+            // empty tree
             if (Root == null) return;
 
             var current = Root;
             var parent = Root;
+            bool isLeftChild = false;
 
             while (current != null && current.Data.CompareTo(value) != 0)
             {
                 parent = current;
-                if (current.Data.CompareTo(value) > 0) current = current.LeftChild;
-                else current = current.RightChild;
+                if (current.Data.CompareTo(value) > 0)
+                {
+                    current = current.LeftChild;
+                    isLeftChild = true;
+                }
+                else
+                { 
+                    current = current.RightChild;
+                    isLeftChild = false;
+                }
             }
             
+            // searched node not found
             if (current == null) return;
 
-            if (current.RightChild == null && current.LeftChild == null) // sökt nod hittad - löv
+            if (current.RightChild == null && current.LeftChild == null) // searched node is leaf node
             {
                 if (current == Root) Root = null;
-                else if (current == parent.LeftChild) parent.LeftChild = null;
-                else parent.RightChild = null;
-                count--;
-            }
-            else if(current.RightChild == null) // sökt nod har en leftChild
-            {
-                if (current == parent.LeftChild) parent.LeftChild = current.LeftChild;
-                else parent.RightChild = current.LeftChild;
-                count--;
-            }
-            else if (current.LeftChild == null) // sökt nod har en rightChild
-            {
-                if (current == parent.RightChild) parent.RightChild = current.RightChild;
-                else parent.LeftChild = current.RightChild;
-                count--;
-            }
-            else // sökt nod har både right- och leftChild
-            {
-                if(current == parent.LeftChild) // vänstra subträdet
+                else
                 {
-                    if(current.LeftChild.RightChild == null) // om currents vänstra barn inte har en höger child (lättare switch)
-                    {
-                        current.LeftChild.RightChild = current.RightChild;
-                        parent.LeftChild = current.LeftChild;
-                    }
-                    else // måste hitta current.LeftChilds mest högra nod
-                    {
-                        var rightestNode = current.LeftChild.RightChild;
-                        
-                        while (rightestNode.RightChild != null)
-                        {
-                            rightestNode = rightestNode.RightChild;
-                        }
-                        rightestNode.RightChild = current.RightChild;
-                        rightestNode.LeftChild = current.LeftChild;
-                        parent.LeftChild = rightestNode;
-                        parent.LeftChild.LeftChild.RightChild = null;
-                    }
+                    if (isLeftChild) parent.LeftChild = null;
+                    else parent.RightChild = null;
                 }
-                else // högra subträdet
+                count--;
+            }
+            else if(current.RightChild == null) // searched node has a left node
+            {
+                if (current == Root) Root = current.LeftChild;
+                else
                 {
-                    if (current.LeftChild.RightChild == null) // om currents vänstra barn inte har en höger child (lättare switch)
-                    {
-                        current.LeftChild.RightChild = current.RightChild;
-                        parent.LeftChild = current.LeftChild;
-                    }
-                    else // måste hitta current.LeftChilds mest högra nod
-                    {
-                        var rightestNode = current.LeftChild.RightChild;
+                    if (isLeftChild) parent.LeftChild = current.LeftChild;
+                    else parent.RightChild = current.LeftChild;
+                }
+                count--;
+            }
+            else if (current.LeftChild == null) // searched node has a right node
+            {
+                if (current == Root) Root = current.RightChild;
+                else
+                {
+                    if (isLeftChild) parent.LeftChild = current.RightChild;
+                    else parent.RightChild = current.RightChild;
+                }
+                count--;
+            }
+            else // searched node has a left node and a right node
+            {
+                // find the least greater node and let it take the place of searched node
+                var successor = GetSuccessor(current);
 
-                        while (rightestNode.RightChild != null)
-                        {
-                            rightestNode = rightestNode.RightChild;
-                        }
-                        rightestNode.RightChild = current.RightChild;
-                        rightestNode.LeftChild = current.LeftChild;
-                        parent.LeftChild = rightestNode;
-                        parent.LeftChild.LeftChild.RightChild = null;
-                    }
-                }
+                //readjust references above the removed node
+                if (current == Root) Root = successor;
+                else if (isLeftChild) parent.LeftChild = successor;
+                else parent.RightChild = successor;
+                count--;
             }
+        }
+
+        private Node<T> GetSuccessor(Node<T> node)
+        {
+            // right node of searched node will always be bigger than searched node, and the left node of the right node will then always be the least greater node in the right subtree of searched node
+            var parentOfSuccessor = node;
+            var successor = node;
+            var current = node.RightChild;
+
+            while (current != null)
+            {
+                parentOfSuccessor = successor;
+                successor = current;
+                current = current.LeftChild;
+            }
+
+            // readjust the references accordingly 
+            if(successor != node.RightChild)
+            {
+                parentOfSuccessor.LeftChild = successor.RightChild;
+                successor.RightChild = node.RightChild;
+            }
+            successor.LeftChild = node.LeftChild;
+
+            return successor;
         }
 
         // Code from David

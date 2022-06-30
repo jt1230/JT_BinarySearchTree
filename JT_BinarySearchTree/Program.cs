@@ -1,39 +1,56 @@
 ﻿using JT_BinarySearchTree;
 
+//         10     
+//        /  \
+//       7    31   
+//      / \   / \
+//     3   8 21  47
+//    / \          \
+//   2   4         77
+
 BinarySearchTree<int> tree = new();
-int[] testNum = new int[] {10, 5, 31, 3, 4, 21, 7, 42, 1, 11, 77};
+int[] testNum = new int[] {10, 7, 31, 3, 8, 21, 47, 2, 4, 77};
 
 foreach (var item in testNum)
 {
     tree.Insert(item);
 }
 
-Console.WriteLine("Count: " + tree.Count()); // 11
+Console.WriteLine("Count: " + tree.Count()); // 10
+
 Console.WriteLine("10 exists: " + tree.Exists(10)); // true
-Console.WriteLine("5 exists: " + tree.Exists(5)); // true
+Console.WriteLine("77 exists: " + tree.Exists(77)); // true
 Console.WriteLine("-37 exists: " + tree.Exists(-37)); // false
 Console.WriteLine("1337 exists: " + tree.Exists(1337)); // false
+
 Console.Write("Depth: ");
-tree.Balance(); // TODO: 3-3 = 0
+tree.Balance(); // 0
+
 Console.WriteLine("Print:");
 tree.Print();
 Console.WriteLine();
-//Tar bort en nod med L & R - L
-//Console.WriteLine("Removing leaf 5 ...");
-//tree.Remove(5);
+
+//Tar bort en nod med L & R
+//Console.WriteLine("Removing 3 ...");
+//tree.Remove(3);
 //Console.WriteLine("Done");
-//Tar bort en nod med L & R - R
-Console.WriteLine("Removing leaf 31 ...");
-tree.Remove(31);
+
+//Tar bort root med L & R
+Console.WriteLine("Removing 10 ...");
+tree.Remove(10);
 Console.WriteLine("Done");
-////Tar bort ett löv
+
+//Tar bort ett löv
 //Console.WriteLine("Removing leaf 77 ...");
 //tree.Remove(77);
 //Console.WriteLine("Done");
-////Tar bort en nod med endast R
-//Console.WriteLine("Removing leaf 7 ...");
-//tree.Remove(7);
+
+//Tar bort en nod med endast R
+//Console.WriteLine("Removing leaf 47 ...");
+//tree.Remove(47);
 //Console.WriteLine("Done");
+
 Console.WriteLine("Print:");
 tree.Print();
-Console.WriteLine("Count: " + tree.Count()); // 10
+
+Console.WriteLine("Count: " + tree.Count()); // 9
