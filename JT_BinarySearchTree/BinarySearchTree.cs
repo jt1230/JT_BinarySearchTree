@@ -104,6 +104,63 @@ namespace JT_BinarySearchTree
                 else parent.RightChild = null;
                 count--;
             }
+            else if(current.RightChild == null) // sökt nod har en leftChild
+            {
+                if (current == parent.LeftChild) parent.LeftChild = current.LeftChild;
+                else parent.RightChild = current.LeftChild;
+                count--;
+            }
+            else if (current.LeftChild == null) // sökt nod har en rightChild
+            {
+                if (current == parent.RightChild) parent.RightChild = current.RightChild;
+                else parent.LeftChild = current.RightChild;
+                count--;
+            }
+            else // sökt nod har både right- och leftChild
+            {
+                if(current == parent.LeftChild) // vänstra subträdet
+                {
+                    if(current.LeftChild.RightChild == null) // om currents vänstra barn inte har en höger child (lättare switch)
+                    {
+                        current.LeftChild.RightChild = current.RightChild;
+                        parent.LeftChild = current.LeftChild;
+                    }
+                    else // måste hitta current.LeftChilds mest högra nod
+                    {
+                        var rightestNode = current.LeftChild.RightChild;
+                        
+                        while (rightestNode.RightChild != null)
+                        {
+                            rightestNode = rightestNode.RightChild;
+                        }
+                        rightestNode.RightChild = current.RightChild;
+                        rightestNode.LeftChild = current.LeftChild;
+                        parent.LeftChild = rightestNode;
+                        parent.LeftChild.LeftChild.RightChild = null;
+                    }
+                }
+                else // högra subträdet
+                {
+                    if (current.LeftChild.RightChild == null) // om currents vänstra barn inte har en höger child (lättare switch)
+                    {
+                        current.LeftChild.RightChild = current.RightChild;
+                        parent.LeftChild = current.LeftChild;
+                    }
+                    else // måste hitta current.LeftChilds mest högra nod
+                    {
+                        var rightestNode = current.LeftChild.RightChild;
+
+                        while (rightestNode.RightChild != null)
+                        {
+                            rightestNode = rightestNode.RightChild;
+                        }
+                        rightestNode.RightChild = current.RightChild;
+                        rightestNode.LeftChild = current.LeftChild;
+                        parent.LeftChild = rightestNode;
+                        parent.LeftChild.LeftChild.RightChild = null;
+                    }
+                }
+            }
         }
 
         // Code from David

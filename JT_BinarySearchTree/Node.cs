@@ -22,9 +22,17 @@ namespace JT_BinarySearchTree
 
 		public int GetBalance()
 		{
-			int left = (LeftChild == null) ? 0 : LeftChild.GetBalance() + 1;
-			int right = (RightChild == null) ? 0 : RightChild.GetBalance() + 1;
-			return Math.Abs(right - left); 
+			int left = (LeftChild == null) ? 0 : LeftChild.GetBalanceHelper(1);
+			int right = (RightChild == null) ? 0 : RightChild.GetBalanceHelper(1);
+			return right - left;
+		}
+
+		// Help from Thomas to fix GetBalance()
+		private int GetBalanceHelper(int level)
+        {
+			int left = (LeftChild == null) ? level : LeftChild.GetBalanceHelper(level + 1);
+			int right = (RightChild == null) ? level : RightChild.GetBalanceHelper(level + 1);
+			return left > right ? left : right;
 		}
 	}
 }
