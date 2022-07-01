@@ -23,10 +23,10 @@ Console.WriteLine("77 exists: " + tree.Exists(77)); // true
 Console.WriteLine("-37 exists: " + tree.Exists(-37)); // false
 Console.WriteLine("1337 exists: " + tree.Exists(1337)); // false
 
-Console.Write("Depth: ");
-tree.Balance(); // 0
+Console.Write("Tree status: ");
+tree.Balance(); // Balanced tree
 
-Console.WriteLine("Print:");
+Console.WriteLine("Print tree:");
 tree.Print();
 Console.WriteLine();
 
@@ -50,7 +50,7 @@ Console.WriteLine("Done");
 //tree.Remove(47);
 //Console.WriteLine("Done");
 
-Console.WriteLine("Print:");
+Console.WriteLine("Print tree:");
 tree.Print();
 
 Console.WriteLine("Count: " + tree.Count()); // 9

@@ -15,10 +15,9 @@ namespace JT_BinarySearchTree
 
         public void Balance()
         {
-            // Methods that you may find useful:
-            // private int GetMaxDepth()
-            // private int GetMinDepth()
-            Console.WriteLine(Root.GetBalance()); // TODO
+            if(Root.GetBalance() > 1) Console.WriteLine("Right subtree is deeper, unbalanced, need to rotate");
+            else if(Root.GetBalance() < -1) Console.WriteLine("Left subtree is deeper, unbalanced, need to rotate");
+            else Console.WriteLine("Tree is balanced");
         }
 
         public int Count()
@@ -54,7 +53,9 @@ namespace JT_BinarySearchTree
             }
 
             var current = Root;
-            while (true)
+            bool isInserting = true;
+
+            while (isInserting)
             {
                 if (node.Data.CompareTo(current.Data) < 0)
                 {
@@ -62,7 +63,7 @@ namespace JT_BinarySearchTree
                     {
                         current.LeftChild = node;
                         count++;
-                        return;
+                        isInserting = false;
                     }
                     current = current.LeftChild;
                 }
@@ -72,15 +73,16 @@ namespace JT_BinarySearchTree
                     {
                         current.RightChild = node;
                         count++;
-                        return;
+                        isInserting = false;
                     }
                     current = current.RightChild;
                 }
             }
+
+            //Balance() would have been called here to check the balance and another function to execute the balancing of the tree would then act accordingly after each insert
         }
 
         public void Remove(T value)
-        // TODO: finns det snyggare lösningsförslag för att spara parent???
         {
             // empty tree
             if (Root == null) return;
@@ -117,7 +119,7 @@ namespace JT_BinarySearchTree
                 }
                 count--;
             }
-            else if(current.RightChild == null) // searched node has a left node
+            else if(current.RightChild == null) // searched node has only a left node
             {
                 if (current == Root) Root = current.LeftChild;
                 else
@@ -127,7 +129,7 @@ namespace JT_BinarySearchTree
                 }
                 count--;
             }
-            else if (current.LeftChild == null) // searched node has a right node
+            else if (current.LeftChild == null) // searched node has only a right node
             {
                 if (current == Root) Root = current.RightChild;
                 else
@@ -181,7 +183,6 @@ namespace JT_BinarySearchTree
             Queue<Node<T>?> nodes = new Queue<Node<T>?>();
             Queue<Node<T>?> newNodes = new Queue<Node<T>?>();
             nodes.Enqueue(Root);
-            //int maxDepth = Root.GetDepth();
             int depth = 0;
 
             bool exitCondition = false;

@@ -30,7 +30,7 @@ namespace JT_BinarySearchTree
 		// Help from Thomas to fix GetBalance()
 		private int GetBalanceHelper(int level)
         {
-			int left = (LeftChild == null) ? level : LeftChild.GetBalanceHelper(level + 1);
+			int left = (LeftChild == null) ? level : LeftChild.GetBalanceHelper(level + 1); 
 			int right = (RightChild == null) ? level : RightChild.GetBalanceHelper(level + 1);
 			return left > right ? left : right;
 		}
